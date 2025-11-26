@@ -1,0 +1,8 @@
+stages:
+  - test
+php_lint:
+  stage: test
+  image: php:8.2-cli
+  script:
+    # Vérifie la syntaxe du fichier
+    - find . -name "*.php" -print -exec php -l {} \;
