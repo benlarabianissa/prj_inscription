@@ -14,6 +14,7 @@ class StagiaireCrudTest extends TestCase
     {
         $response = $this->post(route('stagiaire.store'), [
             'nom' => 'EL Amrani',
+            'prenom' => 'said',
             'datenaissance' => '2000-01-01',
             'adresse' => 'Casablanca',
         ]);
@@ -21,6 +22,7 @@ class StagiaireCrudTest extends TestCase
         $response->assertStatus(302); // souvent redirect après store
         $this->assertDatabaseHas('stagiaires', [
             'nom' => 'EL Amrani',
+            'prenom' => 'said',
             'adresse' => 'Casablanca',
         ]);
     }
@@ -29,11 +31,13 @@ class StagiaireCrudTest extends TestCase
     {
         $stagiaire = Stagiaire::factory()->create([
             'nom' => 'Ancien',
+            'prenom' => 'Ancien',
             'adresse' => 'Rabat'
         ]);
 
         $response = $this->put(route('stagiaire.update', $stagiaire), [
             'nom' => 'Nouveau',
+            'prenom' => 'Nouveau',
             'datenaissance' => $stagiaire->datenaissance,
             'adresse' => 'Tanger',
         ]);
@@ -42,6 +46,7 @@ class StagiaireCrudTest extends TestCase
         $this->assertDatabaseHas('stagiaires', [
             'id' => $stagiaire->id,
             'nom' => 'Nouveau',
+            'prenom' => 'Nouveau',
             'adresse' => 'Tanger',
         ]);
     }
