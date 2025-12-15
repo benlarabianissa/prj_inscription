@@ -52,7 +52,7 @@ class StagiaireController extends Controller
      */
     public function edit(Stagiaire $stagiaire)
     {
-        //
+        return view('stagiaire.edit', compact('stagiaire'));
     }
 
     /**
@@ -60,7 +60,17 @@ class StagiaireController extends Controller
      */
     public function update(Request $request, Stagiaire $stagiaire)
     {
-        //
+        $data = $request->validate([
+        'nom'            => 'required|string|max:255',
+        'prenom'         => 'required|string|max:255',
+        'datenaissance' => 'required|date',
+        'adresse'        => 'nullable|string|max:255',
+    ]);
+
+    $stagiaire->update($data);
+
+    return redirect()->route('stagiaire.index')
+                     ->with('success', 'Stagiaire mis à jour avec succès.');
     }
 
     /**
@@ -68,6 +78,10 @@ class StagiaireController extends Controller
      */
     public function destroy(Stagiaire $stagiaire)
     {
-        //
+         $stagiaire->delete();
+
+    return redirect()
+        ->route('stagiaire.index')
+        ->with('success', 'Stagiaire supprimé avec succès.');
     }
 }

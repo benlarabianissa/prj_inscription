@@ -26,10 +26,10 @@
         <td class="text-end">
           <a class="btn btn-sm btn-outline-secondary" href="{{ route('stagiaire.show',$s) }}">Voir</a>
           <a class="btn btn-sm btn-secondary" href="{{ route('stagiaire.edit',$s) }}">Éditer</a>
-          <form action="{{ route('stagiaire.destroy',$s) }}" method="POST" class="d-inline">
+          <form id="delete-form-{{ $s->id }}" action="{{ route('stagiaire.destroy',$s) }}" method="POST" class="d-inline">
             @csrf @method('DELETE')
-            <button class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">Supprimer</button>
           </form>
+          <button class="btn btn-sm btn-danger" onclick="deleteStagiaire({{$s->id }})">Supprimer</button>
         </td>
       </tr>
     @empty
@@ -39,5 +39,23 @@
 </table>
 
 {{ $stagiaires->links() }}
+<script>
+function deleteStagiaire(id) {
+    Swal.fire({
+        title: "Supprimer ce stagiaire ?",
+        text: "Cette action est irréversible.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Oui, supprimer",
+        cancelButtonText: "Annuler"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("delete-form-" + id).submit();
+        }
+    });
+}
+</script>
 @endsection
 
