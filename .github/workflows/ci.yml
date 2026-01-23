@@ -1,57 +1,105 @@
-name: CI Laravel (tests)
-
+name: Cypress API Test Workflow
 on:
   push:
-    branches: ["main", "develop"]
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  tests:
+  cypress-tests:
     runs-on: ubuntu-latest
-
     steps:
+      # Checkout the repository code
       - name: Checkout code
-        uses: actions/checkout@v4
-        # checkout permet au runner d'avoir ton repo :contentReference[oaicite:0]{index=0}
+        uses: actions/checkout@v2
 
-      - name: Setup PHP + Composer
-        uses: shivammathur/setup-php@v2
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          php-version: "8.2"
-          tools: composer:v2
-          extensions: mbstring, pdo, sqlite, pdo_sqlite
-          coverage: none
-        # setup-php installe PHP + extensions + composer :contentReference[oaicite:1]{index=1}
+          node-version: '16'  # Change to the Node.js version that you are using
 
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.composer/cache
-            vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-        # cache accélère les workflows :contentReference[oaicite:2]{index=2}
-
+      # Install dependencies
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
-
-      - name: Prepare Laravel env
         run: |
-          cp .env.example .env
-          php artisan key:generate
-          mkdir -p database
-          php -r "file_put_contents('database/database.sqlite', '');"
+          npm install
 
-      - name: Run migrations (SQLite)
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan migrate --force
+      # Install Cypress
+      - name: Install Cypress
+        run: |
+          npm install cypress --save-dev
 
-      - name: Run tests
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan test
+      # Run Cypress tests
+      - name: Run Cypress tests
+        run: |
+          npx cypress run --spec 'cypress/e2e/api.cy.js'
+
+      # Optionally, you can upload the Cypress videos/screenshots
+      - name: Upload Cypress artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots
+            cypress/videos
+
+# name: CI Laravel (tests)
+
+# on:
+#   push:
+#     branches: ["main", "develop"]
+#   pull_request:
+
+# jobs:
+#   tests:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         # checkout permet au runner d'avoir ton repo :contentReference[oaicite:0]{index=0}
+
+#       - name: Setup PHP + Composer
+#         uses: shivammathur/setup-php@v2
+#         with:
+#           php-version: "8.2"
+#           tools: composer:v2
+#           extensions: mbstring, pdo, sqlite, pdo_sqlite
+#           coverage: none
+#         # setup-php installe PHP + extensions + composer :contentReference[oaicite:1]{index=1}
+
+#       - name: Cache Composer
+#         uses: actions/cache@v4
+#         with:
+#           path: |
+#             ~/.composer/cache
+#             vendor
+#           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+#           restore-keys: |
+#             ${{ runner.os }}-composer-
+#         # cache accélère les workflows :contentReference[oaicite:2]{index=2}
+
+#       - name: Install dependencies
+#         run: composer install --no-interaction --prefer-dist --no-progress
+
+#       - name: Prepare Laravel env
+#         run: |
+#           cp .env.example .env
+#           php artisan key:generate
+#           mkdir -p database
+#           php -r "file_put_contents('database/database.sqlite', '');"
+
+#       - name: Run migrations (SQLite)
+#         env:
+#           DB_CONNECTION: sqlite
+#           DB_DATABASE: database/database.sqlite
+#         run: php artisan migrate --force
+
+#       - name: Run tests
+#         env:
+#           DB_CONNECTION: sqlite
+#           DB_DATABASE: database/database.sqlite
+#         run: php artisan test

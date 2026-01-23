@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Stagiaire;
+use App\Models\Appartement;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,5 +23,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        Stagiaire::factory()
+        ->has(Appartement::factory()->count(3))
+        ->create();
     }
 }

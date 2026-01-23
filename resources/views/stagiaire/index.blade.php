@@ -24,11 +24,18 @@
         <td>{{ $s->datenaissance }}</td>
         <td>{{ $s->adresse}}</td>
         <td class="text-end">
-          <a class="btn btn-sm btn-outline-secondary" href="{{ route('stagiaire.show',$s) }}">Voir</a>
-          <a class="btn btn-sm btn-secondary" href="{{ route('stagiaire.edit',$s) }}">Éditer</a>
-          <form id="delete-form-{{ $s->id }}" action="{{ route('stagiaire.destroy',$s) }}" method="POST" class="d-inline">
-            @csrf @method('DELETE')
-          </form>
+           {{-- Voir --}}
+  <form action="{{ route('stagiaire.show', $s) }}" method="GET" class="d-inline">
+  <button type="submit" class="btn btn-sm btn-outline-secondary">Voir</button>
+  </form>
+
+  {{-- Éditer --}}
+    <form action="{{ route('stagiaire.edit', $s) }}" method="GET" class="d-inline">
+    <button type="submit" class="btn btn-sm btn-secondary">Éditer</button>
+    </form>
+    <form id="delete-form-{{ $s->id }}" action="{{ route('stagiaire.destroy',$s) }}" method="POST" class="d-inline">
+    @csrf @method('DELETE')
+    </form>
           <button class="btn btn-sm btn-danger" onclick="deleteStagiaire({{$s->id }})">Supprimer</button>
         </td>
       </tr>
