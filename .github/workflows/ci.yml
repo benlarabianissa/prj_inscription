@@ -39,7 +39,7 @@ jobs:
       # Optionally, you can upload the Cypress videos/screenshots
       - name: Upload Cypress artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-artifacts
           path: |
